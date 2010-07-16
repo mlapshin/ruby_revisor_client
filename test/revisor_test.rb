@@ -1,5 +1,7 @@
 require File.join(File.dirname(__FILE__), "test_helper")
 
+ENV['REVISOR_PATH'] = "/home/sotakone/work/revisor/build/revisor"
+
 class RevisorTest < Test::Unit::TestCase
   include SetupAndTeardownOnce
 

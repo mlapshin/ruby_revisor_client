@@ -12,16 +12,19 @@ module Revisor
     @@server_executable = e
   end
 
-  def self.current_server
-    @@current_server
+  def self.server_pid
+    @@server_pid
   end
 
   def self.start_server(interface = "127.0.0.1", port = 8080)
-    @@current_server = IO.popen("#{@@server_executable} -l #{interface} -p #{port}")
-    @@current_server.pid
+    @@server_pid = fork do
+      exec("#{@@server_executable} -l #{interface} -p #{port}")
+    end
+
+    sleep 3
   end
 
   def self.stop_server
-    Process.kill("INT", @@current_server.pid)
+    Process.kill("INT", @@server_pid)
   end
 end
