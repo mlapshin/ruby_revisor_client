@@ -31,3 +31,28 @@ module SetupAndTeardownOnce
 
   end
 end
+
+module StartAndStopRevisorServer
+  def self.included(base)
+    base.send(:include, SetupAndTeardownOnce)
+    base.send(:include, InstanceMethods)
+    base.send(:extend, ClassMethods)
+  end
+
+  module InstanceMethods
+    def create_client
+      @client = Revisor::Client.new("localhost", 8080)
+    end
+  end
+
+  module ClassMethods
+    def setup_once
+      Revisor.server_executable = ENV['REVISOR_PATH'] || 'revisor'
+      Revisor.start_server unless Revisor.server_pid
+    end
+
+    def teardown_once
+      Revisor.stop_server
+    end
+  end
+end
