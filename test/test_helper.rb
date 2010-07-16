@@ -57,9 +57,3 @@ module StartAndStopRevisorServer
     end
   end
 end
-
-at_exit do
-  if Revisor.server_pid && $$ != Revisor.server_pid
-    Revisor.stop_server
-  end
-end

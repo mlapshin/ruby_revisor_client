@@ -11,26 +11,34 @@ module Revisor
       end
 
       def visit(url)
-        @client.command("session.tab.visit", :url => url)
+        cmd = session_and_tab_names.merge({ :url => url })
+        @client.command("session.tab.visit", cmd)
       end
 
       def wait_for_load(timeout = 0)
-        @client.command("session.tab.wait_for_load", :timeout => timeout)
+        cmd = session_and_tab_names.merge({ :timeout => timeout })
+        @client.command("session.tab.wait_for_load", cmd)
       end
 
       def set_confirm_answer(answer)
-        @client.command("session.tab.set_confirm_answer", :answer => answer)
+        cmd = session_and_tab_names.merge({ :answer => answer })
+        @client.command("session.tab.set_confirm_answer", cmd)
       end
 
       def set_prompt_answer(answer, cancelled)
-        @client.command("session.tab.set_prompt_answer",
-                        :answer => answer,
-                        :cancelled => cancelled)
+        cmd = session_and_tab_names.merge({ :answer => answer, :cancelled => cancelled })
+        @client.command("session.tab.set_prompt_answer", cmd)
       end
 
       def evaluate_javascript(script)
-        @client.command("session.tab.evaluate_javascript",
-                        :script => script)
+        cmd = session_and_tab_names.merge({ :script => script })
+        @client.command("session.tab.evaluate_javascript", cmd)
+      end
+
+      protected
+
+      def session_and_tab_names
+        { :session_name => session.name, :tab_name => name }
       end
 
     end

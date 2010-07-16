@@ -18,7 +18,7 @@ module Revisor
       @@server_pid
     end
 
-    def start_server(interface = "127.0.0.1", port = 8080, delay = 1)
+    def start_server(interface = "127.0.0.1", port = 8080, delay = 3)
       if @@server_pid
         raise "Revisor server already started"
       else
@@ -26,13 +26,20 @@ module Revisor
           exec("#{@@server_executable} -l #{interface} -p #{port}")
         end
 
+        at_exit do
+          if Revisor.server_pid && $$ != Revisor.server_pid
+            Revisor.stop_server
+          end
+        end
+
+        # TODO: more clever detection of server startup
         sleep delay
         @@server_pid
       end
     end
 
     def stop_server
-      if @@server_pid != nil
+      if @@server_pid
         Process.kill("INT", @@server_pid)
         @@server_pid = nil
       else
