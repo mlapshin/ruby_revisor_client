@@ -47,12 +47,19 @@ module StartAndStopRevisorServer
 
   module ClassMethods
     def setup_once
-      Revisor.server_executable = ENV['REVISOR_PATH'] || 'revisor'
-      Revisor.start_server unless Revisor.server_pid
+      unless Revisor.server_pid
+        Revisor.server_executable = ENV['REVISOR_PATH'] || 'revisor'
+        Revisor.start_server
+      end
     end
 
     def teardown_once
-      Revisor.stop_server
     end
+  end
+end
+
+at_exit do
+  if Revisor.server_pid && $$ != Revisor.server_pid
+    Revisor.stop_server
   end
 end

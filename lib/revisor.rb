@@ -18,17 +18,26 @@ module Revisor
       @@server_pid
     end
 
-    def start_server(interface = "127.0.0.1", port = 8080, delay = 3)
-      @@server_pid = fork do
-        exec("#{@@server_executable} -l #{interface} -p #{port}")
-      end
+    def start_server(interface = "127.0.0.1", port = 8080, delay = 1)
+      if @@server_pid
+        raise "Revisor server already started"
+      else
+        @@server_pid = fork do
+          exec("#{@@server_executable} -l #{interface} -p #{port}")
+        end
 
-      sleep delay
+        sleep delay
+        @@server_pid
+      end
     end
 
     def stop_server
-      Process.kill("INT", @@server_pid)
-      @@server_pid = 0
+      if @@server_pid != nil
+        Process.kill("INT", @@server_pid)
+        @@server_pid = nil
+      else
+        raise "Revisor server is not started, so I couldn't stop it"
+      end
     end
   end
 end

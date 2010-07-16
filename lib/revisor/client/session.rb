@@ -16,17 +16,17 @@ module Revisor
       def create_tab(tab_name)
         @client.command("session.tab.create",
                         :session_name => @name,
-                        :tab_name => tab_name.to_s)
+                        :tab_name => tab_name)
 
-        @tabs[tab_name.to_s.to_sym] = Tab.new(@client, self, tab_name.to_s.to_sym)
+        @tabs[tab_name] = Tab.new(self, tab_name)
       end
 
       def destroy_tab(tab_name)
         @client.command("session.tab.destroy",
                         :session_name => @name,
-                        :tab_name => tab_name.to_s)
+                        :tab_name => tab_name)
 
-        @tabs.delete(tab_name.to_s.to_sym)
+        @tabs.delete(tab_name)
       end
 
     end
