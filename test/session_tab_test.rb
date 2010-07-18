@@ -30,4 +30,30 @@ class SessionTabTest < Test::Unit::TestCase
     assert_equal "http://example.com/", @tab.evaluate_javascript("window.location.href")[:eval_result]
   end
 
+  def test_evaluate_javascript
+    @tab.visit("http://example.com/")
+    @tab.wait_for_load
+    assert_equal 4, @tab.evaluate_javascript("2 + 2")[:eval_result]
+  end
+
+  def test_prompt_answer
+    @tab.visit("http://example.com/")
+    @tab.wait_for_load
+    @tab.set_prompt_answer("my answer", false)
+    assert_equal "my answer", @tab.evaluate_javascript("prompt('prompt')")[:eval_result]
+
+    @tab.set_prompt_answer("my answer", true)
+    assert_equal "", @tab.evaluate_javascript("prompt('prompt')")[:eval_result]
+  end
+
+  def test_confirm_answer
+    @tab.visit("http://example.com/")
+    @tab.wait_for_load
+    @tab.set_confirm_answer(true)
+    assert_equal true, @tab.evaluate_javascript("confirm('prompt')")[:eval_result]
+
+    @tab.set_confirm_answer(false)
+    assert_equal false, @tab.evaluate_javascript("confirm('prompt')")[:eval_result]
+  end
+
 end
