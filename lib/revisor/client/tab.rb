@@ -32,7 +32,7 @@ module Revisor
 
       def evaluate_javascript(script)
         cmd = session_and_tab_names.merge({ :script => script })
-        @client.command("session.tab.evaluate_javascript", cmd)
+        @client.command("session.tab.evaluate_javascript", cmd)[:eval_result]
       end
 
       protected
