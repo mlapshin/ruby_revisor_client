@@ -23,4 +23,9 @@ class SessionTest < Test::Unit::TestCase
     @client.stop_session(:default)
   end
 
+  def test_setting_of_cookies
+    session = @client.start_session(:cookies_test)
+    session.set_cookies([{ :name => "foo", :value => "bar"}], "http://google.com")
+  end
+
 end

@@ -29,6 +29,13 @@ module Revisor
         @tabs.delete(tab_name)
       end
 
+      def set_cookies(cookies, default_url)
+        @client.command("session.set_cookies",
+                        :session_name => name,
+                        :cookies => cookies,
+                        :default_url => default_url)
+      end
+
     end
   end
 end
