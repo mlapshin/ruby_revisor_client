@@ -25,7 +25,8 @@ class SessionTest < Test::Unit::TestCase
 
   def test_setting_of_cookies
     session = @client.start_session(:cookies_test)
-    session.set_cookies([{ :name => "foo", :value => "bar"}], "http://google.com")
+    session.set_cookies([{ :name => "foo", :value => "bar", :expires_at => Time.now + 3600 }], "http://www.example.com")
+    puts session.get_cookies('http://www.example.com/').inspect
   end
 
 end

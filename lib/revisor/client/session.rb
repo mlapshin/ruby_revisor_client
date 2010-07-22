@@ -29,11 +29,23 @@ module Revisor
         @tabs.delete(tab_name)
       end
 
-      def set_cookies(cookies, default_url)
+      def set_cookies(cookies, url)
+        cookies.each do |cookie|
+          if cookie[:expires_at] && cookie[:expires_at].respond_to?(:xmlschema)
+            cookie[:expires_at] = Client.datetime_to_json(cookie[:expires_at])
+          end
+        end
+
         @client.command("session.set_cookies",
-                        :session_name => name,
+                        :session_name => @name,
                         :cookies => cookies,
-                        :default_url => default_url)
+                        :url => url)
+      end
+
+      def get_cookies(url)
+        @client.command("session.get_cookies",
+                        :session_name => @name,
+                        :url => url)
       end
 
     end
