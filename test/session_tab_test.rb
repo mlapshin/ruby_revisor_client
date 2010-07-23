@@ -56,4 +56,12 @@ class SessionTabTest < Test::Unit::TestCase
     assert_equal false, @tab.evaluate_javascript("confirm('prompt')")
   end
 
+  def test_save_screenshot
+    @tab.visit("http://twitter.com/")
+    @tab.wait_for_load
+
+    assert_equal "OK", @tab.save_screenshot("/tmp/twitter_screenshot.png", [1024, 1024])[:result]
+    assert File.exist?("/tmp/twitter_screenshot.png")
+  end
+
 end

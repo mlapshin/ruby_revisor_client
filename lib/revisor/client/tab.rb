@@ -35,6 +35,17 @@ module Revisor
         @client.command("session.tab.evaluate_javascript", cmd)[:eval_result]
       end
 
+      def save_screenshot(file_name, size = nil)
+        cmd = session_and_tab_names.merge({ :file_name => file_name })
+
+        if size
+          cmd[:viewport_width] = size.first.to_i
+          cmd[:viewport_height] = size.last.to_i
+        end
+
+        @client.command("session.tab.save_screenshot", cmd)
+      end
+
       protected
 
       def session_and_tab_names
