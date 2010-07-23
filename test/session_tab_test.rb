@@ -64,4 +64,16 @@ class SessionTabTest < Test::Unit::TestCase
     assert File.exist?("/tmp/twitter_screenshot.png")
   end
 
+  def test_wait_for_true_evaluation
+    @tab.visit("http://example.com/")
+    @tab.wait_for_load
+
+    # foo will be 42 after 1000 msec
+    @tab.evaluate_javascript("var foo = 0; setTimeout('foo = 42', 1000)")
+    assert @tab.wait_for_true_evaluation("foo == 42", 1000, 3)[:eval_result]
+
+    # this one will never be true
+    assert_equal false, @tab.wait_for_true_evaluation("false", 1000, 3)[:eval_result]
+  end
+
 end

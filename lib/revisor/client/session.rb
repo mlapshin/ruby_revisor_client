@@ -31,7 +31,7 @@ module Revisor
 
       def set_cookies(cookies, url)
         cookies.each do |cookie|
-          if cookie[:expires_at] && cookie[:expires_at].respond_to?(:xmlschema)
+          if cookie[:expires_at] && cookie[:expires_at].is_a?(Time)
             cookie[:expires_at] = Client.datetime_to_json(cookie[:expires_at])
           end
         end
@@ -45,7 +45,7 @@ module Revisor
       def get_cookies(url)
         @client.command("session.get_cookies",
                         :session_name => @name,
-                        :url => url)
+                        :url => url)[:cookies]
       end
 
     end

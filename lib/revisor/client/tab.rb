@@ -20,6 +20,11 @@ module Revisor
         @client.command("session.tab.wait_for_load", cmd)
       end
 
+      def wait_for_true_evaluation(script, interval, tries_count)
+        cmd = session_and_tab_names.merge({ :script => script, :interval => interval, :tries_count => tries_count })
+        @client.command("session.tab.wait_for_true_evaluation", cmd)
+      end
+
       def set_confirm_answer(answer)
         cmd = session_and_tab_names.merge({ :answer => answer })
         @client.command("session.tab.set_confirm_answer", cmd)
