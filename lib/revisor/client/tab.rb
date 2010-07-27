@@ -21,6 +21,7 @@ module Revisor
       end
 
       def wait_for_true_evaluation(script, interval, tries_count)
+        puts "Wait for eval: #{script}"
         cmd = session_and_tab_names.merge({ :script => script, :interval => interval, :tries_count => tries_count })
         @client.command("session.tab.wait_for_true_evaluation", cmd)
       end
@@ -36,9 +37,12 @@ module Revisor
       end
 
       def evaluate_javascript(script)
+        puts "Eval: #{script}"
         cmd = session_and_tab_names.merge({ :script => script })
         @client.command("session.tab.evaluate_javascript", cmd)[:eval_result]
       end
+
+      alias :e :evaluate_javascript
 
       def save_screenshot(file_name, size = nil)
         cmd = session_and_tab_names.merge({ :file_name => file_name })
