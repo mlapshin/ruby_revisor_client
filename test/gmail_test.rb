@@ -7,6 +7,24 @@ class GmailTest < Test::Unit::TestCase
     create_client
     @session = @client.start_session(:gmail_test)
     @tab = @session.create_tab(:tester1)
+
+    @jquery_injection_js = <<-EOJS
+    var jquery_loaded = false;
+
+    (function () {
+      var head = document.getElementsByTagName('head')[0];
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+
+      script.onload = function () {
+        jquery_loaded = true;
+      };
+
+      script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js';
+      head.appendChild(script);
+    }());
+
+    EOJS
   end
 
   def teardown
@@ -16,14 +34,16 @@ class GmailTest < Test::Unit::TestCase
   def test_log_in
     @tab.visit("http://gmail.com/")
     @tab.wait_for_load
-    @tab.e("var jquery_loaded = false; document.body.innerHTML += \"<script onload='console.log('jq loaded'); jquery_loaded = true' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\'></script>\"; ''")
-    @tab.wait_for_true_evaluation("jquery_loaded == false", 500, 4)
-    @tab.e("$.noConflict()");
+    @tab.e(@jquery_injection_js)
+    @tab.wait_for_true_evaluation("jquery_loaded == true", 500, 4)
 
-    @tab.e("jQuery('#Email').val('revisor.tester.1@gmail.com')")
-    @tab.e("jQuery('#Passwd').val('revirevi')")
-    @tab.e("jQuery('#signIn').click()")
+    @tab.e <<-EOE
+    jQuery('#Passwd').val('revirevi');
+    jQuery('#Email').val('revisor.tester.1@gmail.com');
+    jQuery('#signIn').click();
+    EOE
 
-    sleep(5)
+    @tab.wait_for_load
+    puts @tab.e("jQuery('#:rc').attr('id')")
   end
 end
