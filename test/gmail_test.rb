@@ -43,7 +43,11 @@ class GmailTest < Test::Unit::TestCase
     jQuery('#signIn').click();
     EOE
 
-    @tab.wait_for_load
-    puts @tab.e("jQuery('#:rc').attr('id')")
+    @tab.wait_for_true_evaluation("window.location.anchor == 'inbox'", 1000, 4)
+
+    @tab.e(@jquery_injection_js)
+    @tab.e("jQuery('#canvas_frame').contents().find('span[id=:rc]').trigger('click')")
+
+    sleep(3)
   end
 end
