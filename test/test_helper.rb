@@ -54,6 +54,7 @@ module StartAndStopRevisorServer
     end
 
     def teardown_once
+      Revisor.stop_server
     end
   end
 end

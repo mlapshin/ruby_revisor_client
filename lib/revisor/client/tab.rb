@@ -21,9 +21,21 @@ module Revisor
       end
 
       def wait_for_true_evaluation(script, interval, tries_count)
-        puts "Wait for eval: #{script}"
-        cmd = session_and_tab_names.merge({ :script => script, :interval => interval, :tries_count => tries_count })
-        @client.command("session.tab.wait_for_true_evaluation", cmd)
+        # puts "Wait for eval: #{script}"
+        # cmd = session_and_tab_names.merge({ :script => script, :interval => interval, :tries_count => tries_count })
+        # @client.command("session.tab.wait_for_true_evaluation", cmd)
+
+        successfull = false
+        step = 0
+        while !successfull && step < tries_count
+          result = e(script)
+          puts "WTE: #{result.inspect}"
+          successfull = (result == true)
+          step = step + 1
+          sleep(interval / 1000.0)
+        end
+
+        successfull
       end
 
       def set_confirm_answer(answer)
@@ -37,7 +49,7 @@ module Revisor
       end
 
       def evaluate_javascript(script)
-        puts "Eval: #{script}"
+        puts "EEE: #{script}"
         cmd = session_and_tab_names.merge({ :script => script })
         @client.command("session.tab.evaluate_javascript", cmd)[:eval_result]
       end
@@ -53,6 +65,11 @@ module Revisor
         end
 
         @client.command("session.tab.save_screenshot", cmd)
+      end
+
+      def send_mouse_event(kind, x, y, options = {})
+        cmd = session_and_tab_names.merge(:x => x, :y => y).merge(options)
+        @client.command("session.tab.send_mouse_event", cmd)
       end
 
       protected

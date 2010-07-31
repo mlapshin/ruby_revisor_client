@@ -5,8 +5,11 @@ class GmailTest < Test::Unit::TestCase
 
   def setup
     create_client
-    @session = @client.start_session(:gmail_test)
-    @tab = @session.create_tab(:tester1)
+    @first_session = @client.start_session(:tester1)
+    @first_tab = @first_session.create_tab(:tester1)
+
+    @second_session = @client.start_session(:tester2)
+    @second_tab = @second_session.create_tab(:tester2)
 
     @jquery_injection_js = <<-EOJS
     var jquery_loaded = false;
@@ -18,6 +21,7 @@ class GmailTest < Test::Unit::TestCase
 
       script.onload = function () {
         jquery_loaded = true;
+        jQuery.noConflict();
       };
 
       script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js';
@@ -28,26 +32,52 @@ class GmailTest < Test::Unit::TestCase
   end
 
   def teardown
-    @session.stop
+    @first_session.stop
+    @second_session.stop
   end
 
-  def test_log_in
-    @tab.visit("http://gmail.com/")
-    @tab.wait_for_load
-    @tab.e(@jquery_injection_js)
-    @tab.wait_for_true_evaluation("jquery_loaded == true", 500, 4)
+  def login(tab, login, password)
+    tab.visit("http://gmail.com/")
+    tab.wait_for_load
 
-    @tab.e <<-EOE
-    jQuery('#Passwd').val('revirevi');
-    jQuery('#Email').val('revisor.tester.1@gmail.com');
+    tab.e(@jquery_injection_js)
+    tab.wait_for_true_evaluation("jquery_loaded == true", 500, 4)
+
+    tab.e <<-EOE
+    jQuery('#Passwd').val('#{password}');
+    jQuery('#Email').val('#{login}');
     jQuery('#signIn').click();
     EOE
 
-    @tab.wait_for_true_evaluation("window.location.anchor == 'inbox'", 1000, 4)
+    assert tab.wait_for_true_evaluation("window.location.hash == '#inbox'", 1000, 4)
 
-    @tab.e(@jquery_injection_js)
-    @tab.e("jQuery('#canvas_frame').contents().find('span[id=:rc]').trigger('click')")
+    tab.e(@jquery_injection_js)
+    tab.wait_for_true_evaluation("jquery_loaded == true", 500, 4)
+  end
 
-    sleep(3)
+  def test_mail_delivery
+    login(@first_tab, 'revisor.tester.1@gmail.com', 'revirevi')
+    login(@second_tab, 'revisor.tester.2@gmail.com', 'revirevi')
+
+    x = @first_tab.e("jQuery('#canvas_frame').contents().find('span[id=:rc]').offset().left")
+    y = @first_tab.e("jQuery('#canvas_frame').contents().find('span[id=:rc]').offset().top")
+    @first_tab.send_mouse_event("click", x + 10, y + 10, :button => "left", :type => "click")
+
+    sleep(1)
+    assert @first_tab.wait_for_true_evaluation("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').length == 1", 1000, 4)
+
+    subject = "Hello from Revisor #{rand(20000)}"
+    @first_tab.e <<-EOE
+    jQuery('#canvas_frame').contents().find("textarea[name=to]").val("revisor.tester.2@gmail.com");
+    jQuery('#canvas_frame').contents().find("input[name=subject]").val("#{subject}");
+    jQuery('#canvas_frame').contents().find("iframe.editable").contents().find("body").html("Hello from Revisor");
+    document.getElementById("canvas_frame").contentWindow.scroll(0, 100);
+    EOE
+
+    x = @first_tab.e("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').offset().left")
+    y = @first_tab.e("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').offset().top")
+    @first_tab.send_mouse_event("click", x + 10, y + 10 - 100, :button => "left", :type => "click")
+
+    assert @second_tab.wait_for_true_evaluation("jQuery('#canvas_frame').contents().find('*:contains(\\'#{subject}\\')').length > 0", 5000, 10)
   end
 end
