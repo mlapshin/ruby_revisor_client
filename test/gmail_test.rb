@@ -71,12 +71,11 @@ class GmailTest < Test::Unit::TestCase
     jQuery('#canvas_frame').contents().find("textarea[name=to]").val("revisor.tester.2@gmail.com");
     jQuery('#canvas_frame').contents().find("input[name=subject]").val("#{subject}");
     jQuery('#canvas_frame').contents().find("iframe.editable").contents().find("body").html("Hello from Revisor");
-    document.getElementById("canvas_frame").contentWindow.scroll(0, 215);
     EOE
 
-    x = @first_tab.e("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').offset().left")
-    y = @first_tab.e("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').offset().top")
-    @first_tab.send_mouse_event("click", x + 10, y + 2 - 215, :button => "left", :type => "click")
+    x = @first_tab.e("jQuery('#canvas_frame').contents().find('b:contains(\\'Send\\')').offset().left")
+    y = @first_tab.e("jQuery('#canvas_frame').contents().find('b:contains(\\'Send\\')').offset().top")
+    @first_tab.send_mouse_event("click", x + 2, y + 2, :button => "left", :type => "click")
 
     assert @second_tab.wait_for_true_evaluation("jQuery('#canvas_frame').contents().find('*:contains(\\'#{subject}\\')').length > 0", 5000, 20)
   end
