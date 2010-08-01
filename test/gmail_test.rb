@@ -49,7 +49,7 @@ class GmailTest < Test::Unit::TestCase
     jQuery('#signIn').click();
     EOE
 
-    assert tab.wait_for_true_evaluation("var l = window.location; console.log(l); l.hash == '#inbox'", 1000, 5)
+    assert tab.wait_for_true_evaluation("console.log(window.location); window.location.hash == '#inbox'", 6000, 10)
 
     tab.e(@jquery_injection_js)
     tab.wait_for_true_evaluation("jquery_loaded == true", 500, 4)
@@ -71,12 +71,12 @@ class GmailTest < Test::Unit::TestCase
     jQuery('#canvas_frame').contents().find("textarea[name=to]").val("revisor.tester.2@gmail.com");
     jQuery('#canvas_frame').contents().find("input[name=subject]").val("#{subject}");
     jQuery('#canvas_frame').contents().find("iframe.editable").contents().find("body").html("Hello from Revisor");
-    document.getElementById("canvas_frame").contentWindow.scroll(0, 100);
+    document.getElementById("canvas_frame").contentWindow.scroll(0, 210);
     EOE
 
     x = @first_tab.e("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').offset().left")
     y = @first_tab.e("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').offset().top")
-    @first_tab.send_mouse_event("click", x + 10, y + 10 - 100, :button => "left", :type => "click")
+    @first_tab.send_mouse_event("click", x + 10, y + 10 - 210, :button => "left", :type => "click")
 
     assert @second_tab.wait_for_true_evaluation("jQuery('#canvas_frame').contents().find('*:contains(\\'#{subject}\\')').length > 0", 5000, 20)
   end
