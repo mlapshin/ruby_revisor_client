@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), "test_helper")
+require File.join(File.dirname(__FILE__), "../test/test_helper")
 
 class GmailTest < Test::Unit::TestCase
   include StartAndStopRevisorServer
@@ -56,8 +56,8 @@ class GmailTest < Test::Unit::TestCase
   end
 
   def test_mail_delivery
-    login(@first_tab, 'revisor.tester.1@gmail.com', 'revirevi')
-    login(@second_tab, 'revisor.tester.2@gmail.com', 'revirevi')
+    login(@first_tab, 'revisor.test.1@gmail.com', 'revirevi')
+    login(@second_tab, 'revisor.test.2@gmail.com', 'revirevi')
 
     x = @first_tab.e("jQuery('#canvas_frame').contents().find('span[id=:rc]').offset().left")
     y = @first_tab.e("jQuery('#canvas_frame').contents().find('span[id=:rc]').offset().top")
@@ -68,7 +68,7 @@ class GmailTest < Test::Unit::TestCase
 
     subject = "Hello from Revisor #{rand(20000)}"
     @first_tab.e <<-EOE
-    jQuery('#canvas_frame').contents().find("textarea[name=to]").val("revisor.tester.2@gmail.com");
+    jQuery('#canvas_frame').contents().find("textarea[name=to]").val("revisor.test.2@gmail.com");
     jQuery('#canvas_frame').contents().find("input[name=subject]").val("#{subject}");
     jQuery('#canvas_frame').contents().find("iframe.editable").contents().find("body").html("Hello from Revisor");
     EOE
