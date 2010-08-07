@@ -76,8 +76,8 @@ class SessionTabTest < Test::Unit::TestCase
     assert_equal false, @tab.wait_for_true_evaluation("false", 1000, 3)
   end
 
-  def test_send_mouse_event
-    @tab.visit(test_page_url("send_mouse_event"))
+  def test_send_mouse_click_event
+    @tab.visit(test_page_url("send_mouse_click_event"))
     @tab.wait_for_load
 
     @tab.e("window.scrollTo(40, 40)")
@@ -86,12 +86,24 @@ class SessionTabTest < Test::Unit::TestCase
     @tab.send_mouse_event "click", x + 10, y + 10
 
     x, y = get_element_coordinates('second')
-    @tab.send_mouse_event "click", x + 10, y + 10
+    @tab.send_mouse_event "dblclick", x + 10, y + 10
 
+    # Third will be clicked only with Ctrl+Shift+Alt modifiers
     x, y = get_element_coordinates('third')
-    @tab.send_mouse_event "click", x + 10, y + 10
+    @tab.send_mouse_event "click", x + 10, y + 10, :modifiers => ["control", "shift", "alt"]
 
     assert_equal [true, true, true], @tab.e("[first_clicked, second_clicked, third_clicked]")
+  end
+
+def test_send_mouse_move_event
+    @tab.visit(test_page_url("send_mouse_move_event"))
+    @tab.wait_for_load
+
+    x, y = get_element_coordinates('first')
+    @tab.send_mouse_event "move", x + 10, y + 10
+    @tab.send_mouse_event "move", x + 20, y + 20
+
+    assert_equal [[x + 10, y + 10], [x + 20, y + 20]], @tab.e("mousemove_coordinates")
   end
 
   private

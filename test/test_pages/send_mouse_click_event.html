@@ -34,7 +34,7 @@
   </head>
   <body>
     <div id="first" onclick="first_clicked = true; console.log('first clicked');">First</div>
-    <div id="second" onclick="second_clicked = true; console.log('second clicked');">Second</div>
-    <div id="third" onclick="third_clicked = true; console.log('third clicked');">Third</div>
+    <div id="second" ondblclick="second_clicked = true; console.log('second dblclicked');">Second</div>
+    <div id="third" onclick="third_clicked = (window.event.shiftKey && window.event.ctrlKey && window.event.altKey); console.log('third clicked');">Third</div>
   </body>
 </html>

@@ -65,7 +65,7 @@ module Revisor
       end
 
       def send_mouse_event(type, x, y, options = {})
-        options[:button] ||= "left" if type == "click"
+        options[:button] ||= "left" if type == "click" || type == "dblclick"
         cmd = session_and_tab_names.merge(:x => x, :y => y, :type => type).merge(options)
         @client.command("session.tab.send_mouse_event", cmd)
       end

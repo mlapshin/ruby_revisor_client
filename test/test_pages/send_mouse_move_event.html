@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>send_mouse_move_event test page</title>
+
+    <style type="text/css" media="screen">
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #first, #second, #third {
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        overflow: hidden;
+      }
+
+      #first {
+        background-color: #c00;
+        left: 1000px;
+        top: 1000px;
+      }
+    </style>
+
+    <script type="text/javascript">
+      var mousemove_coordinates = [];
+    </script>
+  </head>
+  <body>
+    <div id="first" onmousemove="mousemove_coordinates.push([window.event.pageX, window.event.pageY]);">First</div>
+  </body>
+</html>
