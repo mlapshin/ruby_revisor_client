@@ -13,9 +13,12 @@ class SessionTabTest < Test::Unit::TestCase
     @session.stop
   end
 
-  def test_session_tab_creation
+  def test_session_tab_creation_and_deletion
     assert_not_nil @tab
     assert_equal :foo, @tab.name
+
+    tab2 = @session.create_tab :bar
+    assert tab2.destroy
   end
 
   def test_session_tab_creation_with_duplicate_name
