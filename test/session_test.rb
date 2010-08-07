@@ -30,6 +30,13 @@ class SessionTest < Test::Unit::TestCase
     c = session.get_cookies('http://www.example.com/').first
     assert_equal "foo", c['name']
     assert_equal "bar", c['value']
-  end
 
+    # Also test cookie presence in JS
+    tab = session.create_tab "cookies_test"
+    tab.visit("http://www.example.com/")
+    tab.wait_for_load
+
+    assert tab.e("document.cookie.match(/foo=bar/).length == 1")
+    tab.destroy
+  end
 end
