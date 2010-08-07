@@ -32,7 +32,7 @@ module SetupAndTeardownOnce
   end
 end
 
-module StartAndStopRevisorServer
+module RevisorTestHelper
   def self.included(base)
     base.send(:include, SetupAndTeardownOnce)
     base.send(:include, InstanceMethods)
@@ -42,6 +42,10 @@ module StartAndStopRevisorServer
   module InstanceMethods
     def create_client
       @client = Revisor::Client.new("localhost", 8080)
+    end
+
+    def test_page_url(test_page_name)
+      "file://" + File.dirname(File.expand_path(__FILE__)) + "/test_pages/#{test_page_name}.html"
     end
   end
 

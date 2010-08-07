@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), "test_helper")
 
 class SessionTest < Test::Unit::TestCase
-  include StartAndStopRevisorServer
+  include RevisorTestHelper
 
   def setup
     create_client

@@ -23,7 +23,10 @@ module Revisor
       command = { :name => command_name }.merge(params)
       json = JSON.generate(command)
       puts "==> " + json
+
       response = Net::HTTP.post_form(URI.parse("http://#{@host}:#{@port}/command"), 'command' => json)
+      puts "<== " + response.body
+
       response_json = JSON.parse(response.body).inject({}) { |r, k| r[k.first.to_sym] = k.last; r }
 
       if response_json[:result] == 'Error'

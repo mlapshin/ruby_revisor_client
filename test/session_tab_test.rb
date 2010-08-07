@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), "test_helper")
 
 class SessionTabTest < Test::Unit::TestCase
-  include StartAndStopRevisorServer
+  include RevisorTestHelper
 
   def setup
     create_client
@@ -57,7 +57,7 @@ class SessionTabTest < Test::Unit::TestCase
   end
 
   def test_save_screenshot
-    @tab.visit("http://twitter.com/")
+    @tab.visit("http://example.com/")
     @tab.wait_for_load
 
     assert_equal "OK", @tab.save_screenshot("/tmp/twitter_screenshot.png", [1024, 1024])[:result]
@@ -70,10 +70,36 @@ class SessionTabTest < Test::Unit::TestCase
 
     # foo will be 42 after 1000 msec
     @tab.evaluate_javascript("var foo = 0; setTimeout('foo = 42', 1000)")
-    assert @tab.wait_for_true_evaluation("foo == 42", 1000, 3)[:eval_result]
+    assert @tab.wait_for_true_evaluation("foo == 42", 1000, 3)
 
     # this one will never be true
-    assert_equal false, @tab.wait_for_true_evaluation("false", 1000, 3)[:eval_result]
+    assert_equal false, @tab.wait_for_true_evaluation("false", 1000, 3)
+  end
+
+  def test_send_mouse_event
+    @tab.visit(test_page_url("send_mouse_event"))
+    @tab.wait_for_load
+
+    @tab.e("window.scrollTo(40, 40)")
+
+    x, y = get_element_coordinates('first')
+    @tab.send_mouse_event "click", x + 10, y + 10
+
+    x, y = get_element_coordinates('second')
+    @tab.send_mouse_event "click", x + 10, y + 10
+
+    x, y = get_element_coordinates('third')
+    @tab.send_mouse_event "click", x + 10, y + 10
+
+    assert_equal [true, true, true], @tab.e("[first_clicked, second_clicked, third_clicked]")
+  end
+
+  private
+
+  def get_element_coordinates(element_id)
+    x, y = @tab.e("[document.getElementById('#{element_id}').offsetLeft, document.getElementById('#{element_id}').offsetTop]")
+    assert x.is_a?(Fixnum) && y.is_a?(Fixnum)
+    return [x, y]
   end
 
 end
