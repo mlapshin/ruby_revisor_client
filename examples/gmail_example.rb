@@ -41,7 +41,7 @@ class GmailTest < Test::Unit::TestCase
     tab.wait_for_load
 
     tab.e(@jquery_injection_js)
-    tab.wait_for_true_evaluation("jquery_loaded == true", 500, 4)
+    tab.wait_for_condition("jquery_loaded == true", 500, 4)
 
     tab.e <<-EOE
     jQuery('#Passwd').val('#{password}');
@@ -49,10 +49,10 @@ class GmailTest < Test::Unit::TestCase
     jQuery('#signIn').click();
     EOE
 
-    assert tab.wait_for_true_evaluation("console.log(window.location); window.location.hash == '#inbox'", 6000, 10)
+    assert tab.wait_for_condition("console.log(window.location); window.location.hash == '#inbox'", 6000, 10)
 
     tab.e(@jquery_injection_js)
-    tab.wait_for_true_evaluation("jquery_loaded == true", 500, 4)
+    tab.wait_for_condition("jquery_loaded == true", 500, 4)
   end
 
   def test_mail_delivery
@@ -64,7 +64,7 @@ class GmailTest < Test::Unit::TestCase
     @first_tab.send_mouse_event("click", x + 10, y + 10, :button => "left", :type => "click")
 
     sleep(1)
-    assert @first_tab.wait_for_true_evaluation("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').length == 1", 1000, 10)
+    assert @first_tab.wait_for_condition("jQuery('#canvas_frame').contents().find('.CoUvaf b:contains(\\'Send\\')').length == 1", 1000, 10)
 
     subject = "Hello from Revisor #{rand(20000)}"
     @first_tab.e <<-EOE
@@ -77,6 +77,6 @@ class GmailTest < Test::Unit::TestCase
     y = @first_tab.e("jQuery('#canvas_frame').contents().find('b:contains(\\'Send\\')').offset().top")
     @first_tab.send_mouse_event("click", x + 2, y + 2, :button => "left", :type => "click")
 
-    assert @second_tab.wait_for_true_evaluation("jQuery('#canvas_frame').contents().find('*:contains(\\'#{subject}\\')').length > 0", 5000, 20)
+    assert @second_tab.wait_for_condition("jQuery('#canvas_frame').contents().find('*:contains(\\'#{subject}\\')').length > 0", 5000, 20)
   end
 end

@@ -67,16 +67,16 @@ class SessionTabTest < Test::Unit::TestCase
     assert File.exist?("/tmp/twitter_screenshot.png")
   end
 
-  def test_wait_for_true_evaluation
+  def test_wait_for_condition
     @tab.visit("http://example.com/")
     @tab.wait_for_load
 
     # foo will be 42 after 1000 msec
     @tab.evaluate_javascript("var foo = 0; setTimeout('foo = 42', 1000)")
-    assert @tab.wait_for_true_evaluation("foo == 42", 1000, 3)
+    assert @tab.wait_for_condition("foo == 42", 1000, 3)
 
     # this one will never be true
-    assert_equal false, @tab.wait_for_true_evaluation("false", 1000, 3)
+    assert_equal false, @tab.wait_for_condition("false", 1000, 3)
   end
 
   def test_send_mouse_click_event
@@ -98,7 +98,7 @@ class SessionTabTest < Test::Unit::TestCase
     assert_equal [true, true, true], @tab.e("[first_clicked, second_clicked, third_clicked]")
   end
 
-def test_send_mouse_move_event
+  def test_send_mouse_move_event
     @tab.visit(test_page_url("send_mouse_move_event"))
     @tab.wait_for_load
 

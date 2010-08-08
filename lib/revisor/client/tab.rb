@@ -20,7 +20,7 @@ module Revisor
         @client.command("session.tab.wait_for_load", cmd)
       end
 
-      def wait_for_true_evaluation(script, interval, tries_count)
+      def wait_for_condition(script, interval, tries_count)
         successfull = false
         step = 0
 
