@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>send_key_event test page</title>
+
+    <script type="text/javascript">
+      var keyWithShiftDowned = false;
+      var keyWithCtrlUpped = false;
+
+      function focusTextbox(i) {
+        var tb = document.getElementById("textbox" + i);
+        tb.focus();
+      }
+
+      window.onload = function() {
+        document.getElementById("textbox2").onkeydown = function(e) {
+          if(e.shiftKey) {
+            keyWithShiftDowned = true;
+          }
+        };
+
+        document.getElementById("textbox3").onkeyup = function(e) {
+          if(e.ctrlKey) {
+            keyWithCtrlUpped = true;
+          }
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <input type="text" id="textbox1" />
+    <input type="text" id="textbox2" />
+    <input type="text" id="textbox3" />
+  </body>
+</html>

@@ -10,6 +10,13 @@ module Revisor
         @name = name
       end
 
+      def destroy
+        @session.destroy_tab(self.name)
+        @session = nil
+
+        true
+      end
+
       def visit(url)
         cmd = session_and_tab_names.merge({ :url => url })
         @client.command("session.tab.visit", cmd)
@@ -68,6 +75,11 @@ module Revisor
         options[:button] ||= "left" if type == "click" || type == "dblclick"
         cmd = session_and_tab_names.merge(:x => x, :y => y, :type => type).merge(options)
         @client.command("session.tab.send_mouse_event", cmd)
+      end
+
+      def send_key_event(type, key, text, options = {})
+        cmd = session_and_tab_names.merge(:text => text, :key => key, :type => type).merge(options)
+        @client.command("session.tab.send_key_event", cmd)
       end
 
       protected

@@ -109,6 +109,29 @@ class SessionTabTest < Test::Unit::TestCase
     assert_equal [[x + 10, y + 10], [x + 20, y + 20]], @tab.e("mousemove_coordinates")
   end
 
+  def test_send_key_event
+    @tab.visit(test_page_url("send_key_event"))
+    @tab.wait_for_load
+
+    @tab.e("focusTextbox(1)")
+    @tab.send_key_event "press", "A", "A"
+    @tab.send_key_event "press", "B", "B"
+    @tab.send_key_event "press", "C", "C"
+    @tab.send_key_event "press", "Semicolon", "Ж"
+    @tab.send_key_event "press", "E",         "У"
+    @tab.send_key_event "press", "Q",         "Й"
+
+    assert_equal "ABCЖУЙ", @tab.e("document.getElementById('textbox1').value")
+
+    @tab.e("focusTextbox(2)")
+    @tab.send_key_event "down", "A", "A", :modifiers => ['shift']
+
+    @tab.e("focusTextbox(3)")
+    @tab.send_key_event "up", "A", "A", :modifiers => ['ctrl']
+
+    assert_equal [true, true], @tab.e("[keyWithShiftDowned, keyWithCtrlUpped]")
+  end
+
   private
 
   def get_element_coordinates(element_id)
