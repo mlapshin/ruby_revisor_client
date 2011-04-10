@@ -12,6 +12,8 @@ begin
     gemspec.description = ""
     gemspec.authors = ["Mikhail Lapshin"]
   end
+
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end
