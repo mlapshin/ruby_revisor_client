@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     "lib/revisor/client.rb",
     "lib/revisor/client/session.rb",
     "lib/revisor/client/tab.rb",
+    "revisor_client.gemspec",
     "test/session_tab_test.rb",
     "test/session_test.rb",
     "test/test_helper.rb",
