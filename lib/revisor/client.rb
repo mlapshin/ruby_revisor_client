@@ -22,10 +22,10 @@ module Revisor
     def command(command_name, params = {})
       command = { :name => command_name }.merge(params)
       json = JSON.generate(command)
-      puts "==> " + json
+      # puts "==> " + json
 
       response = Net::HTTP.post_form(URI.parse("http://#{@host}:#{@port}/command"), 'command' => json)
-      puts "<== " + response.body
+      # puts "<== " + response.body
 
       response_json = JSON.parse(response.body).inject({}) { |r, k| r[k.first.to_sym] = k.last; r }
 

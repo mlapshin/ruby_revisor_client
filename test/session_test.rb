@@ -23,17 +23,17 @@ class SessionTest < Test::Unit::TestCase
     @client.stop_session(:default)
   end
 
-  def test_setting_and_getting_of_cookies
+  def test_setting_and_getting_cookies
     session = @client.start_session(:cookies_test)
-    session.set_cookies([{ :name => "foo", :value => "bar", :expires_at => Time.now + 3600 }], "http://www.example.com")
+    session.set_cookies([{ :name => "foo", :value => "bar", :expires_at => Time.now + 3600 }], "http://sotakone.github.com")
 
-    c = session.get_cookies('http://www.example.com/').first
+    c = session.get_cookies('http://sotakone.github.com/').first
     assert_equal "foo", c['name']
     assert_equal "bar", c['value']
 
     # Also test cookie presence in JS
     tab = session.create_tab "cookies_test"
-    tab.visit("http://www.example.com/")
+    tab.visit("http://sotakone.github.com/")
     tab.wait_for_load
 
     assert tab.e("document.cookie.match(/foo=bar/).length == 1")
